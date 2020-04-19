@@ -1,3 +1,11 @@
-﻿LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-main.obj : error LNK2019: unresolved external symbol gladLoadGLLoader referenced in function main
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\bin\x64\Debug\project.exe : fatal error LNK1120: 1 unresolved externals
+﻿  main.cpp
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(424,22): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(487,29): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(488,29): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(554,11): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(555,11): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(560,16): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(561,16): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(563,10): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(564,10): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+  project.vcxproj -> D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\bin\x64\Debug\project.exe

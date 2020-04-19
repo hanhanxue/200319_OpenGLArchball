@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Dropbox\asset\x_dep\GLFW\include;D:\Dropbox\asset\x_dep\GLAD\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Dropbox\asset\x_dep\GLFW\include;D:\Dropbox\asset\x_dep\GLM;D:\Dropbox\asset\x_dep\GLAD\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,7 +105,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Dropbox\asset\x_dep\GLFW\include;D:\Dropbox\asset\x_dep\GLAD\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Dropbox\asset\x_dep\GLFW\include;D:\Dropbox\asset\x_dep\GLM;D:\Dropbox\asset\x_dep\GLAD\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,7 +121,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Dropbox\asset\x_dep\GLFW\include;D:\Dropbox\asset\x_dep\GLAD\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Dropbox\asset\x_dep\GLFW\include;D:\Dropbox\asset\x_dep\GLM;D:\Dropbox\asset\x_dep\GLAD\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,7 +139,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Dropbox\asset\x_dep\GLFW\include;D:\Dropbox\asset\x_dep\GLAD\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Dropbox\asset\x_dep\GLFW\include;D:\Dropbox\asset\x_dep\GLM;D:\Dropbox\asset\x_dep\GLAD\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,7 +150,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\glad.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\shader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\shader.h" />
+    <ClInclude Include="src\stb_image.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\shader.frag" />
+    <None Include="shaders\shader.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\container.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
