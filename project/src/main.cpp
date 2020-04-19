@@ -15,12 +15,20 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-void hhx_cursor_callback(GLFWwindow* window, double xpos, double ypos);
-
 //#include <sstream>
 //#include <iostream>
 
 #include "shader.h"
+#include "camera.h"
+
+
+
+
+void hhx_cursor_callback(GLFWwindow* window, double xpos, double ypos);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void keyCallbackFunction(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+
 
 float mixValue = 0.0f;
 float radius = 10.0f;
@@ -43,80 +51,10 @@ int keyD = 0;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void keyCallbackFunction(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (GLFW_PRESS == action)
-	{
-		//printf("something pressed\n");
-	}
-	if (GLFW_KEY_UP == key && GLFW_PRESS == action)
-	{
-		radius += 0.5f;
-		if (mixValue < 1.0f)
-		{
-			mixValue += 0.1f;
-		}
-
-	}
-	if (GLFW_KEY_DOWN == key && GLFW_PRESS == action)
-	{
-		radius -= 0.5f;
-		if (mixValue > 0.01f)
-		{
-			mixValue -= 0.1f;
-		}
-
-	}
-	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
-	{
-		glfwSetWindowShouldClose(window, true);
-
-	}
 
 
 
-	float cameraSpeed = 1.0f;
-	if (GLFW_KEY_W == key && GLFW_PRESS == action)
-	{
-		keyW = 1;
-	}
-	else if (GLFW_KEY_W == key && GLFW_RELEASE == action)
-	{
-		keyW = 0; 
-	}
-	if (GLFW_KEY_S == key && GLFW_PRESS == action)
-	{
-		keyS = 1;
-	}
-	else if (GLFW_KEY_S == key && GLFW_RELEASE == action)
-	{
-		keyS = 0;
-	}
-	if (GLFW_KEY_A == key && GLFW_PRESS == action)
-	{
-		keyA = 1;
-	}
-	else if (GLFW_KEY_A == key && GLFW_RELEASE == action)
-	{
-		keyA = 0;
-	}
-	if (GLFW_KEY_D == key && GLFW_PRESS == action)
-	{
-		keyD = 1;
-	}
-	else if (GLFW_KEY_D == key && GLFW_RELEASE == action)
-	{
-		keyD = 0;
-	}
-
-
-	printf("mixValue is: %f\n", mixValue);
-}
-
-
-
-
+Camera camera;
 Shader haha;
 
 
@@ -428,19 +366,19 @@ int main()
 		float cameraSpeed = deltaTime * 2.5f;
 		if (keyW == 1)
 		{
-			cameraPos += cameraFront * cameraSpeed;
+			camera.UpdatePosition(FORWARD, deltaTime);
 		}
 		if (keyS == 1)
 		{
-			cameraPos -= cameraFront * cameraSpeed;
+			camera.UpdatePosition(BACKWARD, deltaTime);
 		}
 		if (keyA == 1)
 		{
-			cameraPos += glm::normalize(glm::cross(cameraUp, cameraFront)) * cameraSpeed;
+			camera.UpdatePosition(LEFT, deltaTime);
 		}
 		if (keyD == 1)
 		{
-			cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+			camera.UpdatePosition(RIGHT, deltaTime);
 		}
 
 
@@ -491,7 +429,13 @@ int main()
 
 
 
-		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+
+		view = camera.GetViewMatrix();
+
+
+
+
 
 
 
@@ -564,28 +508,87 @@ void hhx_cursor_callback(GLFWwindow* window, double xpos, double ypos)
 	lastY = ypos;
 	printf("xpos: %f, ypos: %f\n", xpos, ypos);
 
-	const float sensitivity = 0.05f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-
-	pitch += yoffset;
-	yaw += xoffset;
-	printf("pitch: %f, yaw: %f\n", pitch, yaw);
-	printf("xoffset: %f, yoffset: %f\n\n\n\n", xoffset, yoffset);
-	if (pitch > 89.0f) pitch = 89.0f;
-		if (pitch < -89.0f) pitch = -89.0f;
-
-	glm::vec3 direction;
-
-	direction.x = glm::cos(glm::radians(pitch)) * glm::cos(glm::radians(yaw));
-	direction.y = glm::sin(glm::radians(pitch));
-	direction.z = glm::cos(glm::radians(pitch)) * glm::sin(glm::radians(yaw));
-
-
-
-
-	cameraFront = glm::normalize(direction);
-
-
+	camera.UpdateFront(xoffset, yoffset);
 
 }
+
+
+
+
+
+
+
+
+
+
+
+void keyCallbackFunction(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (GLFW_PRESS == action)
+	{
+		//printf("something pressed\n");
+	}
+	if (GLFW_KEY_UP == key && GLFW_PRESS == action)
+	{
+		radius += 0.5f;
+		if (mixValue < 1.0f)
+		{
+			mixValue += 0.1f;
+		}
+
+	}
+	if (GLFW_KEY_DOWN == key && GLFW_PRESS == action)
+	{
+		radius -= 0.5f;
+		if (mixValue > 0.01f)
+		{
+			mixValue -= 0.1f;
+		}
+
+	}
+	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
+	{
+		glfwSetWindowShouldClose(window, true);
+
+	}
+
+
+
+	float cameraSpeed = 1.0f;
+	if (GLFW_KEY_W == key && GLFW_PRESS == action)
+	{
+		keyW = 1;
+	}
+	else if (GLFW_KEY_W == key && GLFW_RELEASE == action)
+	{
+		keyW = 0;
+	}
+	if (GLFW_KEY_S == key && GLFW_PRESS == action)
+	{
+		keyS = 1;
+	}
+	else if (GLFW_KEY_S == key && GLFW_RELEASE == action)
+	{
+		keyS = 0;
+	}
+	if (GLFW_KEY_A == key && GLFW_PRESS == action)
+	{
+		keyA = 1;
+	}
+	else if (GLFW_KEY_A == key && GLFW_RELEASE == action)
+	{
+		keyA = 0;
+	}
+	if (GLFW_KEY_D == key && GLFW_PRESS == action)
+	{
+		keyD = 1;
+	}
+	else if (GLFW_KEY_D == key && GLFW_RELEASE == action)
+	{
+		keyD = 0;
+	}
+
+
+	printf("mixValue is: %f\n", mixValue);
+}
+
