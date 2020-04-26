@@ -1,17 +1,17 @@
 #version 330 core
 
 
-uniform sampler2D textureA;
-uniform sampler2D textureB;
-uniform float mixValue;
 
-in vec2 TexCoord;
+// input
 
 
 
-out vec4 FragColor;
-//uniform vec4 myColor;
+// input uniform
 
+uniform vec4 axisColor;
+
+
+out vec4 olor;
 
 
 
@@ -19,6 +19,6 @@ out vec4 FragColor;
 void main()
 {
 	
-	FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	//FragColor = texture(textureA, TexCoord);
+	olor = axisColor;
+
 }

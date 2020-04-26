@@ -22,7 +22,7 @@ private:
 	float Yaw = -90.0f;
 	float Pitch = 0.0f;
 
-	float MovementSpeed = 2.5f;
+	float MovementSpeed = 5.0f;
 
 
 public:

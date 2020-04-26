@@ -1,13 +1,15 @@
 ﻿  main.cpp
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(199,21): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(202,35): warning C4244:  'argument': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(206,36): warning C4244:  'argument': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(210,32): warning C4244:  'argument': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(214,33): warning C4244:  'argument': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(309,11): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(310,11): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(315,16): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(316,16): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(318,10): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(319,10): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(340,21): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(343,35): warning C4244:  'argument': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(347,36): warning C4244:  'argument': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(351,32): warning C4244:  'argument': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(355,33): warning C4244:  'argument': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(447,11): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(448,11): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(453,16): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(454,16): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(456,10): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(457,10): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(599,29): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(600,17): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
   project.vcxproj -> D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\bin\x64\Debug\project.exe
