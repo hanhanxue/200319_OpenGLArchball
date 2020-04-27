@@ -10,7 +10,6 @@
 
 uniform vec4 axisColor;
 
-
 out vec4 olor;
 
 

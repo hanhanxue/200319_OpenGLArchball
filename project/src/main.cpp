@@ -118,6 +118,8 @@ int main()
 
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glViewport(25, 25, SCR_WIDTH - 50, SCR_HEIGHT - 50);
 
 
@@ -125,8 +127,131 @@ int main()
 
 
 
-	
 
+
+
+
+
+
+
+
+
+
+	float gridX1[] = {
+		-5.0f, 0.0f, -5.0f,
+		5.0f, 0.0f, -5.0f,
+	};
+	float gridX2A[] = {
+	-5.0f, 0.0f, -0.0f,
+	-0.1f, 0.0f, -0.0f,
+	};
+	float gridX2B[] = {
+1.1f, 0.0f, -0.0f,
+5.0f, 0.0f, -0.0f,
+	};
+	float gridX3[] = {
+	-5.0f, 0.0f, 5.0f,
+	5.0f, 0.0f, 5.0f,
+	};
+
+
+	float gridZ1[] = {
+	-5.0f, 0.0f, -5.0f,
+	-5.0f, 0.0f, 5.0f,
+	};
+	float gridZ2A[] = {
+	0.0f, 0.0f, -5.0f,
+	0.0f, 0.0f, -0.1f,
+	};
+	float gridZ2B[] = {
+0.0f, 0.0f, 1.1f,
+0.0f, 0.0f, 5.0f,
+	};
+	float gridZ3[] = {
+	5.0f, 0.0f, -5.0f,
+	5.0f, 0.0f, 5.0f,
+	};
+
+	// Left X Axis
+	unsigned int GridVAO[8];
+	unsigned int GridVBO[8];
+	glGenVertexArrays(8, GridVAO);
+	glGenBuffers(8, GridVBO);
+
+
+
+	glBindVertexArray(GridVAO[0]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, GridVBO[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(gridX1), gridX1, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+
+	glBindVertexArray(GridVAO[1]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, GridVBO[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(gridX2A), gridX2A, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindVertexArray(GridVAO[2]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, GridVBO[2]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(gridX2B), gridX2B, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+
+
+	glBindVertexArray(GridVAO[3]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, GridVBO[3]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(gridX3), gridX3, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindVertexArray(GridVAO[4]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, GridVBO[4]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(gridZ1), gridZ1, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+
+	glBindVertexArray(GridVAO[5]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, GridVBO[5]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(gridZ2A), gridZ2A, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindVertexArray(GridVAO[6]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, GridVBO[6]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(gridZ2B), gridZ2B, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+
+	glBindVertexArray(GridVAO[7]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, GridVBO[7]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(gridZ3), gridZ3, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 
 
 
@@ -181,13 +306,6 @@ int main()
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-
-
-
-
-
-
-
 
 
 	float vertices_box[] = {
@@ -337,38 +455,11 @@ int main()
 
 
 
-		float cameraSpeed = deltaTime * 2.5f;
-		if (keyW == 1)
-		{
-			camera.UpdatePosition(FORWARD, deltaTime);
-		}
-		if (keyS == 1)
-		{
-			camera.UpdatePosition(BACKWARD, deltaTime);
-		}
-		if (keyA == 1)
-		{
-			camera.UpdatePosition(LEFT, deltaTime);
-		}
-		if (keyD == 1)
-		{
-			camera.UpdatePosition(RIGHT, deltaTime);
-		}
-
-
-
-
-
-
-
 
 
 		// rendering commands here
 		glClearColor(1.0f, 0.8f, 0.8f, 1.0f);    // state setting
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);           // state using
-
-
-
 
 
 
@@ -379,12 +470,21 @@ int main()
 
 
 
+		glUniform4f(axisColor_Loc, 0.5f, 0.5f, 0.5f, 1.0f);
+		for (unsigned int i = 0; i < 8; i++)
+		{
+			glBindVertexArray(GridVAO[i]);
+			glDrawArrays(GL_LINES, 0, 2);
+		}
+
 		for (unsigned int i = 0; i < 3; i++)
 		{
 			glUniform4f(axisColor_Loc, axisColors[i].x, axisColors[i].y, axisColors[i].z, 1.0f);
 			glBindVertexArray(VAO[i]);
 			glDrawArrays(GL_LINES, 0, 2);
 		}
+
+
 
 		glUniform4f(axisColor_Loc, 0.1f, 0.1f, 0.1f, 1.0f);
 		glBindVertexArray(BoxVAO);
@@ -412,6 +512,40 @@ int main()
 	glfwTerminate();
 	return 0;
 } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void hhx_framebuffer_size_callback(GLFWwindow* window, int width, int height)
