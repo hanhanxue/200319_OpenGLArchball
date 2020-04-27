@@ -44,7 +44,7 @@ void hhx_MouseButtonCallback(GLFWwindow* window, int button, int action, int mod
 
 
 void hhx_cursor_callback(GLFWwindow* window, double xpos, double ypos);
-void keyCallbackFunction(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 
 
 
@@ -94,7 +94,7 @@ int main()
 	glfwSetCursorPosCallback(window, hhx_CursorPosCallback);
 	glfwSetMouseButtonCallback(window, hhx_MouseButtonCallback);
 
-	glfwSetKeyCallback(window, keyCallbackFunction);
+
 
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -596,83 +596,6 @@ void hhx_cursor_callback(GLFWwindow* window, double xpos, double ypos)
 }
 
 
-
-
-
-
-
-
-
-
-
-void keyCallbackFunction(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (GLFW_PRESS == action)
-	{
-		//printf("something pressed\n");
-	}
-	if (GLFW_KEY_UP == key && GLFW_PRESS == action)
-	{
-		radius += 0.5f;
-		if (mixValue < 1.0f)
-		{
-			mixValue += 0.1f;
-		}
-
-	}
-	if (GLFW_KEY_DOWN == key && GLFW_PRESS == action)
-	{
-		radius -= 0.5f;
-		if (mixValue > 0.01f)
-		{
-			mixValue -= 0.1f;
-		}
-
-	}
-	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
-	{
-		glfwSetWindowShouldClose(window, true);
-
-	}
-
-
-
-	float cameraSpeed = 1.0f;
-	if (GLFW_KEY_W == key && GLFW_PRESS == action)
-	{
-		keyW = 1;
-	}
-	else if (GLFW_KEY_W == key && GLFW_RELEASE == action)
-	{
-		keyW = 0;
-	}
-	if (GLFW_KEY_S == key && GLFW_PRESS == action)
-	{
-		keyS = 1;
-	}
-	else if (GLFW_KEY_S == key && GLFW_RELEASE == action)
-	{
-		keyS = 0;
-	}
-	if (GLFW_KEY_A == key && GLFW_PRESS == action)
-	{
-		keyA = 1;
-	}
-	else if (GLFW_KEY_A == key && GLFW_RELEASE == action)
-	{
-		keyA = 0;
-	}
-	if (GLFW_KEY_D == key && GLFW_PRESS == action)
-	{
-		keyD = 1;
-	}
-	else if (GLFW_KEY_D == key && GLFW_RELEASE == action)
-	{
-		keyD = 0;
-	}
-
-
-}
 
 
 

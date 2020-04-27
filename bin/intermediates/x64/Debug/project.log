@@ -5,6 +5,7 @@ D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(587,16)
 D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(588,16): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
 D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(590,10): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
 D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(591,10): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(733,29): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(734,17): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(656,29): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(657,17): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   project.vcxproj -> D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\bin\x64\Debug\project.exe
