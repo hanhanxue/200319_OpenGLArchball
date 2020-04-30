@@ -8,9 +8,9 @@
 
 // input uniform
 
-uniform vec4 axisColor;
+uniform vec4 myColor;
 
-out vec4 olor;
+out vec4 YES;
 
 
 
@@ -18,6 +18,6 @@ out vec4 olor;
 void main()
 {
 	
-	olor = axisColor;
+	YES = myColor;
 
 }

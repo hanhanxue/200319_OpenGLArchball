@@ -1,78 +1,48 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <iostream>
-//#include <fstream>
-//#include <string>
 
-#include <algorithm>
 #include <glad\glad.h>
+
 #include <GLFW\glfw3.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+//#include <glm/gtc/type_ptr.hpp>
 
 #include "stb_image.h"
 #include "shader.h"
-#include "camera.h"
-
-
-void hhx_framebuffer_size_callback(GLFWwindow* window, int width, int height);
-
-double hhx_toCameraCoord(double screenCoord, int scrDimension);
-
-glm::vec3 hhx_getArcballSrfPt(double xScreen, double yScreen);
-
-double deltaTime = 0.0;
-double lastFrame = 0.0;
-
+#include "cameraEuler.h"
 
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 
-glm::mat4 viewCur = glm::mat4(1.0f);
-glm::mat4 viewLast = glm::mat4(1.0f);
+double deltaTime = 0.0;
+double lastFrameTime = 0.0;
 
-bool archball_on = false;
-double cursorPos_last_X;
-double cursorPos_last_Y;
-double cursorPos_cur_X;
-double cursorPos_cur_Y;
+void hhx_framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void hhx_cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
+void hhx_mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
-void hhx_CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
-void hhx_MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+bool mouse_button_left_pressed = false;
+bool mouse_button_middle_pressed = false;
+bool mouse_button_right_pressed = false;
 
+bool mouse_first_move = true;
 
-void hhx_cursor_callback(GLFWwindow* window, double xpos, double ypos);
-
-
-
-
-float mixValue = 0.0f;
-float radius = 10.0f;
-
-float pitch = 0.0f;
-float yaw = -90.0f;
-
-bool mouseFirstMove = true;
-
-// Camera
+double last_xpos = 0.0;
+double last_ypos = 0.0;
 
 
-int keyW = 0;
-int keyS = 0;
-int keyA = 0;
-int keyD = 0;
-
-
-
-Camera camera;
-Shader shader_axis;
+//Camera camera;
+cameraEuler camera;
+Shader shader_default;
 
 
 
 int main()
 {
+
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -89,21 +59,10 @@ int main()
 	glfwMakeContextCurrent(window);
 
 
+
 	glfwSetFramebufferSizeCallback(window, hhx_framebuffer_size_callback);
-	//glfwSetCursorPosCallback(window, hhx_cursor_callback);
-	glfwSetCursorPosCallback(window, hhx_CursorPosCallback);
-	glfwSetMouseButtonCallback(window, hhx_MouseButtonCallback);
-
-
-
-
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-
-
-
-
-
+	glfwSetCursorPosCallback(window, hhx_cursor_position_callback);
+	glfwSetMouseButtonCallback(window, hhx_mouse_button_callback);
 
 
 
@@ -117,10 +76,12 @@ int main()
 
 
 
+
+	glViewport(25, 25, SCR_WIDTH - 50, SCR_HEIGHT - 50);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glViewport(25, 25, SCR_WIDTH - 50, SCR_HEIGHT - 50);
+	glPointSize(10.0f);
 
 
 
@@ -130,7 +91,24 @@ int main()
 
 
 
+	float viewPivot[] = {
+		0.0f, 0.0f, 0.0f,
+	};
 
+	unsigned int pivotVAO;
+	unsigned int pivotVBO;
+	glGenVertexArrays(1, &pivotVAO);
+	glGenBuffers(1, &pivotVBO);
+
+
+
+	glBindVertexArray(pivotVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, pivotVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(viewPivot), viewPivot, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 
 
 
@@ -361,6 +339,11 @@ int main()
 	glEnableVertexAttribArray(0);
 
 
+	glm::vec3 axisColors[] = {
+	glm::vec3(1.0f, 0.0f, 0.0f),
+	glm::vec3(0.0f, 1.0f, 0.0f),
+	glm::vec3(0.0f, 0.0f, 1.0f),
+	};
 
 
 
@@ -380,85 +363,50 @@ int main()
 
 
 
-	shader_axis.CompileShader("shaders/shader.vert", "shaders/shader.frag");
-	shader_axis.UseShader();
 
-	unsigned int model_Loc = shader_axis.getUniformLocation("model");
-	unsigned int view_Loc = shader_axis.getUniformLocation("view");
-	unsigned int projection_Loc = shader_axis.getUniformLocation("projection");
+	shader_default.CompileShader("shaders/shader.vert", "shaders/shader.frag");
+	shader_default.UseShader();
 
-	unsigned int axisColor_Loc = shader_axis.getUniformLocation("axisColor");
+	
+	unsigned int model_Loc = shader_default.getUniformLocation("model");
+	unsigned int view_Loc = shader_default.getUniformLocation("view");
+	unsigned int projection_Loc = shader_default.getUniformLocation("projection");
+
+	unsigned int myColor_Loc = shader_default.getUniformLocation("myColor");
 
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
-	glm::vec3 axisColors[] = {
-		glm::vec3(1.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f),
-	};
 
 
-	view = camera.GetViewMatrix();
+
+	view = camera.getViewMatrix();
+	//glPolygonMode(GL_POINT);
+
 
 	while (!glfwWindowShouldClose(window)) // This is the render loop
 	{
-		/*
-				printf("on: %i  lasX: %f  lasY:%f  curX: %f  curY: %f\n", 
-			archball_on,
-			cursorPos_last_X,
-			cursorPos_last_Y,
-			cursorPos_cur_X,
-			cursorPos_cur_Y
-		);
-		*/
-		float angle = 0.0f;
-		glm::vec3 rotationAxis;
+		//printf("mouseButtonLeft: %i\n", mouse_button_left_pressed);
 
-		if (archball_on)
-		{
-			if (cursorPos_cur_X != cursorPos_last_X || cursorPos_cur_Y != cursorPos_last_Y) {
-
-
-				glm::vec3 OP1 = hhx_getArcballSrfPt(cursorPos_last_X, cursorPos_last_Y);
-				glm::vec3 OP2 = hhx_getArcballSrfPt(cursorPos_cur_X, cursorPos_cur_Y);
-
-				angle = acos(std::min(1.0f, glm::dot(OP1, OP2)));
-
-				rotationAxis = glm::cross(OP1, OP2);
-
-
-				view = glm::rotate(viewLast, angle, rotationAxis);
+		double currentFrameTime = glfwGetTime();
+		deltaTime = currentFrameTime - lastFrameTime;
+		lastFrameTime = currentFrameTime;
+		//printf("deltaTime: %f\n", deltaTime);
 
 
 
-
-
-			}
-
-
-		}
-
-
-
-		viewCur = view;
-
-		printf("angle: %f\n", angle);
-
-		// input
-
-		double currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-
+		//camera.updateCamera(1.0f, 0.0f);
+		view = camera.getViewMatrix();
 
 
 
 
 
 		// rendering commands here
-		glClearColor(1.0f, 0.8f, 0.8f, 1.0f);    // state setting
+		//glClearColor(1.0f, 0.8f, 0.8f, 1.0f);    // state setting
+		//glClearColor(0.8471f, 0.7373f, 0.7843f, 1.0f);    // state setting
+		glClearColor(0.5373f, 0.2706f, 0.9098f, 1.0f);    // state setting
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);           // state using
 
 
@@ -466,11 +414,28 @@ int main()
 		glUniformMatrix4fv(model_Loc, 1, GL_FALSE, &model[0][0]);
 		glUniformMatrix4fv(view_Loc, 1, GL_FALSE, &view[0][0]);
 		glUniformMatrix4fv(projection_Loc, 1, GL_FALSE, &projection[0][0]);
+		// NONE PRO glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 
 
 
-		glUniform4f(axisColor_Loc, 0.5f, 0.5f, 0.5f, 1.0f);
+		if (mouse_button_left_pressed || mouse_button_middle_pressed || mouse_button_right_pressed)
+		{
+			model = camera.getPivotMatrix();
+			glUniformMatrix4fv(model_Loc, 1, GL_FALSE, &model[0][0]);
+
+			glUniform4f(myColor_Loc, 1.0f, 1.0f, 1.0f, 1.0f);
+			glBindVertexArray(pivotVAO);
+			glDrawArrays(GL_POINTS, 0, 1);
+
+			model = glm::mat4(1.0f);
+			glUniformMatrix4fv(model_Loc, 1, GL_FALSE, &model[0][0]);
+		}
+
+
+
+
+		glUniform4f(myColor_Loc, 0.5f, 0.5f, 0.5f, 1.0f);
 		for (unsigned int i = 0; i < 8; i++)
 		{
 			glBindVertexArray(GridVAO[i]);
@@ -479,21 +444,14 @@ int main()
 
 		for (unsigned int i = 0; i < 3; i++)
 		{
-			glUniform4f(axisColor_Loc, axisColors[i].x, axisColors[i].y, axisColors[i].z, 1.0f);
+			glUniform4f(myColor_Loc, axisColors[i].x, axisColors[i].y, axisColors[i].z, 1.0f);
 			glBindVertexArray(VAO[i]);
 			glDrawArrays(GL_LINES, 0, 2);
 		}
 
-
-
-		glUniform4f(axisColor_Loc, 0.1f, 0.1f, 0.1f, 1.0f);
+		glUniform4f(myColor_Loc, 0.1f, 0.1f, 0.1f, 1.0f);
 		glBindVertexArray(BoxVAO);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-
-
-
-
 
 
 
@@ -529,148 +487,67 @@ int main()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void hhx_framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	// make sure the viewport matches the new window dimensions; note that width and 
-	// height will be significantly larger than specified on retina displays.
-
-		glViewport(0 + 50, 0 + 50, width - 50, height - 50);
 
 }
 
-
-
-
-
-
-float lastX;// = 400.0f;
-float lastY;// = 300.0f;
-
-
-
-void hhx_cursor_callback(GLFWwindow* window, double xpos, double ypos)
+void hhx_cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	//printf("xpos: %f, ypos: %f\n", xpos, ypos);
-	//printf("lastX: %f, lastY: %f\n", lastX, lastY);
-
-	//printf("mouseFirstMove: %d\n", mouseFirstMove);
-	
-
-
-	if (mouseFirstMove)
+	if (mouse_first_move)
 	{
-		lastX = xpos;
-		lastY = ypos;
-		mouseFirstMove = false;
+		last_xpos = xpos;
+		last_ypos = ypos;
+		mouse_first_move = false;
 	}
 
+	float delta_xpos = xpos - last_xpos;
+	float delta_ypos = last_ypos - ypos;
 
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos;
+	last_xpos = xpos;
+	last_ypos = ypos;
 
-	lastX = xpos;
-	lastY = ypos;
-	//printf("xpos: %f, ypos: %f\n", xpos, ypos);
+	if (mouse_button_left_pressed)
+	{
+		camera.tumbleCamera(delta_xpos, delta_ypos);
+	}
 
-	camera.UpdateFront(xoffset, yoffset);
-
-}
-
-
-
-
-
-
-
-void hhx_CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
-{
-	cursorPos_cur_X = xpos;
-	cursorPos_cur_Y = ypos;
-	//printf("xpos is: %f and ", xpos);
-	//printf("ypos is: %f\n", ypos);
+	if (mouse_button_middle_pressed)
+	{
+		camera.trackCamera(delta_xpos, delta_ypos);
+	}
 	
-
-
+	//printf("delta_xpos: %f, delta_ypos: %f\n", delta_xpos, delta_ypos);
 }
 
-
-void hhx_MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void hhx_mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 	{
-		//printf("Left Mouse");
-		archball_on = true;
-		cursorPos_last_X = cursorPos_cur_X;
-		cursorPos_last_Y = cursorPos_cur_Y;
-		//printf("brrrr");
-		viewLast = viewCur;
+		mouse_button_left_pressed = true;
 	}
 	else
 	{
-		archball_on = false;
+		mouse_button_left_pressed = false;
 	}
 
 	if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS)
 	{
-		//printf("Middle Mouse");
+		mouse_button_middle_pressed = true;
+	}
+	else
+	{
+		mouse_button_middle_pressed = false;
 	}
 
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
 	{
-		//printf("Right Mouse");
-	}
-
-}
-
-double hhx_toCameraCoord(double screenCoord, int scrDimension)
-{
-	return screenCoord / (double)scrDimension * 2.0 - 1.0;
-}
-
-
-glm::vec3 hhx_getArcballSrfPt(double xScreen, double yScreen)
-{
-
-	float xCamera;
-	float yCamera;
-	float zCamera = 0.0;
-	xCamera = hhx_toCameraCoord(xScreen, SCR_WIDTH);
-	yCamera = -1.0 * hhx_toCameraCoord( yScreen, SCR_HEIGHT);
-
-	float opSquared = xCamera * xCamera + yCamera * yCamera;
-
-	glm::vec3 P = glm::vec3(xCamera, yCamera, zCamera);
-
-	if (opSquared <= 1.0)
-	{
-		P.z = sqrt(1 - opSquared);
-		
+		mouse_button_right_pressed = true;
 	}
 	else
 	{
-		P = glm::normalize(P);
+		mouse_button_right_pressed = false;
 	}
-
-	return P;
-	//printf("xpos: %f and ypos: %f\n", x, y);
-
 }
+
+
