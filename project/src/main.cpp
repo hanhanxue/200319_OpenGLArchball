@@ -23,6 +23,7 @@ double lastFrameTime = 0.0;
 void hhx_framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void hhx_cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 void hhx_mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+void hhx_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 bool mouse_button_left_pressed = false;
 bool mouse_button_middle_pressed = false;
@@ -30,12 +31,16 @@ bool mouse_button_right_pressed = false;
 
 bool mouse_first_move = true;
 
+bool CTRL = false;
+bool ALT = false;
+bool SHIFT = false;
+
 double last_xpos = 0.0;
 double last_ypos = 0.0;
 
 
 //Camera camera;
-cameraEuler camera;
+cameraEuler camera = cameraEuler(SCR_WIDTH - 50.0f, SCR_HEIGHT - 50.0f);
 Shader shader_default;
 
 
@@ -63,6 +68,7 @@ int main()
 	glfwSetFramebufferSizeCallback(window, hhx_framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, hhx_cursor_position_callback);
 	glfwSetMouseButtonCallback(window, hhx_mouse_button_callback);
+	glfwSetKeyCallback(window, hhx_key_callback);
 
 
 
@@ -376,7 +382,7 @@ int main()
 
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 view = glm::mat4(1.0f);
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+	glm::mat4 projection = 
 
 
 
@@ -388,6 +394,7 @@ int main()
 	while (!glfwWindowShouldClose(window)) // This is the render loop
 	{
 		//printf("mouseButtonLeft: %i\n", mouse_button_left_pressed);
+		//printf("CTRL: %i, ALT: %i, SHIFT: %i\n", CTRL, ALT, SHIFT);
 
 		double currentFrameTime = glfwGetTime();
 		deltaTime = currentFrameTime - lastFrameTime;
@@ -398,7 +405,7 @@ int main()
 
 		//camera.updateCamera(1.0f, 0.0f);
 		view = camera.getViewMatrix();
-
+		projection = camera.getProjectionMatrix();
 
 
 
@@ -419,7 +426,8 @@ int main()
 
 
 
-		if (mouse_button_left_pressed || mouse_button_middle_pressed || mouse_button_right_pressed)
+		if ((mouse_button_left_pressed || mouse_button_middle_pressed || mouse_button_right_pressed)
+			&& (CTRL || ALT))
 		{
 			model = camera.getPivotMatrix();
 			glUniformMatrix4fv(model_Loc, 1, GL_FALSE, &model[0][0]);
@@ -487,9 +495,21 @@ int main()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 void hhx_framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-
+	glViewport(25, 25, width - 50, height - 50);
+	camera.setAspectRatio(width - 50.0f, height - 50.0f);
 }
 
 void hhx_cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
@@ -507,15 +527,30 @@ void hhx_cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 	last_xpos = xpos;
 	last_ypos = ypos;
 
-	if (mouse_button_left_pressed)
+	if (ALT && mouse_button_left_pressed)
 	{
-		camera.tumbleCamera(delta_xpos, delta_ypos);
+		camera.tumble(delta_xpos, delta_ypos);
 	}
 
-	if (mouse_button_middle_pressed)
+	if (ALT && mouse_button_middle_pressed)
 	{
-		camera.trackCamera(delta_xpos, delta_ypos);
+
+		camera.track(delta_xpos, delta_ypos);
 	}
+
+	if (ALT && mouse_button_right_pressed)
+	{
+		if (CTRL)
+		{
+			camera.zoom(delta_xpos, delta_ypos);
+		}
+		else
+		{
+			camera.dolly(delta_xpos, delta_ypos);
+		}
+
+	}
+
 	
 	//printf("delta_xpos: %f, delta_ypos: %f\n", delta_xpos, delta_ypos);
 }
@@ -548,6 +583,43 @@ void hhx_mouse_button_callback(GLFWwindow* window, int button, int action, int m
 	{
 		mouse_button_right_pressed = false;
 	}
+}
+
+void hhx_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_H && action == GLFW_PRESS)
+	{
+		camera.home();
+	}
+
+	CTRL = false;
+	ALT = false;
+	SHIFT = false;
+
+	if (mods == GLFW_MOD_CONTROL)
+	{
+		CTRL = true;
+	}
+
+
+	if (mods == GLFW_MOD_ALT)
+	{
+		ALT = true;
+	}
+
+
+	if (mods == GLFW_MOD_SHIFT)
+	{
+		SHIFT = true;
+	}
+
+	if (mods == (GLFW_MOD_CONTROL | GLFW_MOD_ALT))
+	{
+		CTRL = true;
+		ALT = true;
+	}
+	//printf("mods: %i bitwise: %i\n", mods, (GLFW_MOD_CONTROL | GLFW_MOD_ALT)  );
+
 }
 
 

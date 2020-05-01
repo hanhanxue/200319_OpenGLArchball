@@ -3,24 +3,24 @@
 #include "cameraEuler.h"
 
 
-
-
-cameraEuler::cameraEuler()
-	: position(glm::vec3(5.0f, 5.0f, 5.0f)), pivot(glm::vec3(0.0f, 0.0f, 0.0f))
+cameraEuler::cameraEuler(float width, float height)
+	: position(glm::vec3(5.0f, 5.0f, 5.0f)), pivot(glm::vec3(0.0f, 0.0f, 0.0f)), aspectRatio(width / height)
 {
 	updateCamera();
-
 }
 
 
+void cameraEuler::home()
+{
+	position = glm::vec3(5.0f, 5.0f, 5.0f);
+	pivot = glm::vec3(0.0f, 0.0f, 0.0f);
 
+	fov = 45.0f;
 
+	updateCamera();
+}
 
-
-
-
-
-void cameraEuler::tumbleCamera(float delta_xpos, float delta_ypos)
+void cameraEuler::tumble(float delta_xpos, float delta_ypos)
 {	
 	delta_xpos *= TUMBLE_SPEED;
 	delta_ypos *= -TUMBLE_SPEED;
@@ -36,7 +36,7 @@ void cameraEuler::tumbleCamera(float delta_xpos, float delta_ypos)
 
 
 	glm::mat4 m_tumble = glm::mat4(1.0f);
-	m_tumble = glm::rotate(m_tumble, -delta_xpos, worldUp);    // rotate on world Y
+	m_tumble = glm::rotate(m_tumble, -delta_xpos, WORLDUP);    // rotate on world Y
 	m_tumble = glm::rotate(m_tumble, -delta_ypos, right);    // rotate on target X
 
 
@@ -49,7 +49,7 @@ void cameraEuler::tumbleCamera(float delta_xpos, float delta_ypos)
 
 }
 
-void cameraEuler::trackCamera(float delta_xpos, float delta_ypos)
+void cameraEuler::track(float delta_xpos, float delta_ypos)
 {
 	delta_xpos *= -TRACK_SPEED;
 	delta_ypos *= -TRACK_SPEED;
@@ -62,57 +62,48 @@ void cameraEuler::trackCamera(float delta_xpos, float delta_ypos)
 	position = m_track * glm::vec4(position, 1.0f);
 
 	updateCamera();
-	printf("pivot: %f %f %f    position: %f %f %f\n", pivot.x, pivot.y, pivot.z, position.x, position.y, position.z);
+	//printf("pivot: %f %f %f    position: %f %f %f\n", pivot.x, pivot.y, pivot.z, position.x, position.y, position.z);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void cameraEuler::updateCamera()
+void cameraEuler::dolly(float delta_xpos, float delta_ypos)
 {
-	front = glm::normalize(pivot - position);
+	delta_xpos *= -DOLLY_SPEED;
+	delta_ypos *= -DOLLY_SPEED;
 
-	right = glm::normalize(glm::cross(front, worldUp));
-	up = glm::normalize(glm::cross(right, front));
+	glm::mat4 m_dolly = glm::mat4(1.0f);
+	m_dolly = glm::translate(m_dolly, front * (delta_ypos - delta_xpos));
 
+	position = m_dolly * glm::vec4(position, 1.0f);
 
-	view = glm::lookAt(position, position + front, up);
+	frontSwitch = glm::dot(glm::normalize(pivot - position), front);
 
-
-	pitch = glm::degrees(acos(glm::dot(front, worldUp)));
-
+	updateCamera();
 }
 
-
-
-
-glm::mat4 cameraEuler::getViewMatrix() const
+void cameraEuler::zoom(float delta_xpos, float delta_ypos)
 {
-	return view;
+	delta_xpos *= ZOOM_SPEED;
+	delta_ypos *= ZOOM_SPEED;
+
+	fov += delta_ypos - delta_xpos;
+	fov = glm::clamp(fov, MIN_FOV, MAX_FOV);
+
+	//printf("%f\n", fov);
+
+	updateCamera();
 }
 
+
+
+
+
+
+
+void cameraEuler::setAspectRatio(float width, float height)
+{
+	aspectRatio = width / height;
+	updateCamera();
+}
 
 glm::mat4 cameraEuler::getPivotMatrix() const
 {
@@ -120,6 +111,38 @@ glm::mat4 cameraEuler::getPivotMatrix() const
 	m_pivot = glm::translate(m_pivot, pivot);
 	return m_pivot;
 }
+
+glm::mat4 cameraEuler::getViewMatrix() const
+{
+	return view;
+}
+
+
+glm::mat4 cameraEuler::getProjectionMatrix() const
+{
+	return projection;
+}
+
+
+
+
+
+void cameraEuler::updateCamera()
+{
+
+	front = glm::normalize((pivot - position) * frontSwitch);
+
+	right = glm::normalize(glm::cross(front, WORLDUP));
+	up = glm::normalize(glm::cross(right, front));
+
+
+	pitch = glm::degrees(acos(glm::dot(front, WORLDUP)));
+
+	view = glm::lookAt(position, position + front, up);
+	projection = glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 100.0f);
+}
+
+
 
 cameraEuler::~cameraEuler()
 {
