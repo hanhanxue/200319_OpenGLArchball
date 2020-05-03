@@ -1,6 +1,2 @@
-﻿  cameraEuler.cpp
-  main.cpp
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(524,19): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
-  Generating Code...
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(525,19): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+﻿  main.cpp
   project.vcxproj -> D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\bin\x64\Debug\project.exe

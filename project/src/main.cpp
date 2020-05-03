@@ -38,10 +38,15 @@ bool SHIFT = false;
 double last_xpos = 0.0;
 double last_ypos = 0.0;
 
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 
 //Camera camera;
 cameraEuler camera = cameraEuler(SCR_WIDTH - 50.0f, SCR_HEIGHT - 50.0f);
+
 Shader shader_default;
+Shader shader_light;
+Shader shader_lamp;
 
 
 
@@ -88,6 +93,22 @@ int main()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPointSize(10.0f);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -345,6 +366,81 @@ int main()
 	glEnableVertexAttribArray(0);
 
 
+
+	float vertices[] = {
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	};
+
+	unsigned int newBox_VAO;
+	unsigned int newBox_VBO;
+	glGenVertexArrays(1, &newBox_VAO);
+	glGenBuffers(1, &newBox_VBO);
+
+	glBindVertexArray(newBox_VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, newBox_VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+
+	unsigned int light_VAO;
+	glGenVertexArrays(1, &light_VAO);
+
+	glBindVertexArray(light_VAO);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, newBox_VBO);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+
+
+
+
 	glm::vec3 axisColors[] = {
 	glm::vec3(1.0f, 0.0f, 0.0f),
 	glm::vec3(0.0f, 1.0f, 0.0f),
@@ -371,28 +467,37 @@ int main()
 
 
 	shader_default.CompileShader("shaders/shader.vert", "shaders/shader.frag");
-	shader_default.UseShader();
-
-	
 	unsigned int model_Loc = shader_default.getUniformLocation("model");
 	unsigned int view_Loc = shader_default.getUniformLocation("view");
 	unsigned int projection_Loc = shader_default.getUniformLocation("projection");
-
 	unsigned int myColor_Loc = shader_default.getUniformLocation("myColor");
+
+
+	shader_light.CompileShader("shaders/colors.vert", "shaders/colors.frag");
+	unsigned int light_model_Loc = shader_light.getUniformLocation("model");
+	unsigned int light_view_Loc = shader_light.getUniformLocation("view");
+	unsigned int light_projection_Loc = shader_light.getUniformLocation("projection");
+	unsigned int light_objectColor_Loc = shader_light.getUniformLocation("objectColor");
+	unsigned int light_lightColor_Loc = shader_light.getUniformLocation("lightColor");
+
+
+	shader_lamp.CompileShader("shaders/lamp.vert", "shaders/lamp.frag");
+	unsigned int lamp_model_Loc = shader_lamp.getUniformLocation("model");
+	unsigned int lamp_view_Loc = shader_lamp.getUniformLocation("view");
+	unsigned int lamp_projection_Loc = shader_lamp.getUniformLocation("projection");
+
 
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 view = glm::mat4(1.0f);
-	glm::mat4 projection = 
+	glm::mat4 projection = glm::mat4(1.0f);
 
 
-
-
-	view = camera.getViewMatrix();
 	//glPolygonMode(GL_POINT);
 
 
 	while (!glfwWindowShouldClose(window)) // This is the render loop
 	{
+
 		//printf("mouseButtonLeft: %i\n", mouse_button_left_pressed);
 		//printf("CTRL: %i, ALT: %i, SHIFT: %i\n", CTRL, ALT, SHIFT);
 
@@ -401,11 +506,6 @@ int main()
 		lastFrameTime = currentFrameTime;
 		//printf("deltaTime: %f\n", deltaTime);
 
-
-
-		//camera.updateCamera(1.0f, 0.0f);
-		view = camera.getViewMatrix();
-		projection = camera.getProjectionMatrix();
 
 
 
@@ -418,14 +518,24 @@ int main()
 
 
 
+
+
+		//camera.updateCamera(1.0f, 0.0f);
+		model = glm::mat4(1.0f);
+		view = camera.getViewMatrix();
+		projection = camera.getProjectionMatrix();
+
+
+
+
+
+		shader_default.UseShader();
 		glUniformMatrix4fv(model_Loc, 1, GL_FALSE, &model[0][0]);
 		glUniformMatrix4fv(view_Loc, 1, GL_FALSE, &view[0][0]);
 		glUniformMatrix4fv(projection_Loc, 1, GL_FALSE, &projection[0][0]);
 		// NONE PRO glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
-
-
-
+		// Pivot
 		if ((mouse_button_left_pressed || mouse_button_middle_pressed || mouse_button_right_pressed)
 			&& (CTRL || ALT))
 		{
@@ -439,10 +549,7 @@ int main()
 			model = glm::mat4(1.0f);
 			glUniformMatrix4fv(model_Loc, 1, GL_FALSE, &model[0][0]);
 		}
-
-
-
-
+		// Grid
 		glUniform4f(myColor_Loc, 0.5f, 0.5f, 0.5f, 1.0f);
 		for (unsigned int i = 0; i < 8; i++)
 		{
@@ -456,13 +563,48 @@ int main()
 			glBindVertexArray(VAO[i]);
 			glDrawArrays(GL_LINES, 0, 2);
 		}
-
+		// Box Background
 		glUniform4f(myColor_Loc, 0.1f, 0.1f, 0.1f, 1.0f);
 		glBindVertexArray(BoxVAO);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 
 
+
+
+
+
+
+
+
+
+
+		shader_light.UseShader();
+		glUniformMatrix4fv(light_model_Loc, 1, GL_FALSE, &model[0][0]);
+		glUniformMatrix4fv(light_view_Loc, 1, GL_FALSE, &view[0][0]);
+		glUniformMatrix4fv(light_projection_Loc, 1, GL_FALSE, &projection[0][0]);
+
+		glUniform3f(light_lightColor_Loc, 1.0f, 1.0f, 1.0f);
+		glUniform3f(light_objectColor_Loc, 1.0f, 0.0f, 0.0f);
+
+		glBindVertexArray(newBox_VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+
+
+
+
+		shader_lamp.UseShader();
+		model = glm::translate(model, lightPos);
+		model = glm::scale(model, glm::vec3(0.1f));
+
+		glUniformMatrix4fv(lamp_model_Loc, 1, GL_FALSE, &model[0][0]);
+		glUniformMatrix4fv(lamp_view_Loc, 1, GL_FALSE, &view[0][0]);
+		glUniformMatrix4fv(lamp_projection_Loc, 1, GL_FALSE, &projection[0][0]);
+
+		glBindVertexArray(newBox_VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
 		
@@ -521,8 +663,8 @@ void hhx_cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 		mouse_first_move = false;
 	}
 
-	float delta_xpos = xpos - last_xpos;
-	float delta_ypos = last_ypos - ypos;
+	float delta_xpos = (float)(xpos - last_xpos);
+	float delta_ypos = (float)(last_ypos - ypos);
 
 	last_xpos = xpos;
 	last_ypos = ypos;
