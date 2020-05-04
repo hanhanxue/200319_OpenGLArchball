@@ -123,6 +123,10 @@ glm::mat4 cameraEuler::getProjectionMatrix() const
 	return projection;
 }
 
+glm::vec3 cameraEuler::getPositionVec() const
+{
+	return position;
+}
 
 
 

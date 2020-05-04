@@ -21,6 +21,7 @@ public:
 
 	void setAspectRatio(float width, float height);
 
+	glm::vec3 getPositionVec() const;
 	glm::mat4 getPivotMatrix() const;
 	glm::mat4 getViewMatrix() const;
 	glm::mat4 getProjectionMatrix() const;
