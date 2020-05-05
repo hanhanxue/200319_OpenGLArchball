@@ -478,14 +478,6 @@ int main()
 	unsigned int myColor_Loc = shader_default.getUniformLocation("myColor");
 
 
-	shader_light.CompileShader("shaders/colors.vert", "shaders/colors.frag");
-	unsigned int light_model_Loc = shader_light.getUniformLocation("model");
-	unsigned int light_view_Loc = shader_light.getUniformLocation("view");
-	unsigned int light_projection_Loc = shader_light.getUniformLocation("projection");
-	unsigned int light_objectColor_Loc = shader_light.getUniformLocation("objectColor");
-	unsigned int light_lightColor_Loc = shader_light.getUniformLocation("lightColor");
-	unsigned int light_lightPos_Loc = shader_light.getUniformLocation("lightPos");
-	unsigned int light_viewPos_Loc = shader_light.getUniformLocation("viewPos");
 
 
 
@@ -493,6 +485,31 @@ int main()
 	unsigned int lamp_model_Loc = shader_lamp.getUniformLocation("model");
 	unsigned int lamp_view_Loc = shader_lamp.getUniformLocation("view");
 	unsigned int lamp_projection_Loc = shader_lamp.getUniformLocation("projection");
+
+	unsigned int lamp_lampClr_Loc = shader_lamp.getUniformLocation("lampClr");
+
+
+
+
+
+	shader_light.CompileShader("shaders/colors.vert", "shaders/colors.frag");
+	unsigned int light_model_Loc = shader_light.getUniformLocation("model");
+	unsigned int light_view_Loc = shader_light.getUniformLocation("view");
+	unsigned int light_projection_Loc = shader_light.getUniformLocation("projection");
+	//unsigned int light_objectColor_Loc = shader_light.getUniformLocation("objectColor");
+	unsigned int light_lightColor_Loc = shader_light.getUniformLocation("lightColor");
+	unsigned int light_lightPos_Loc = shader_light.getUniformLocation("lightPos");
+	unsigned int light_viewPos_Loc = shader_light.getUniformLocation("viewPos");
+
+	unsigned int light_ambientClr_Loc = shader_light.getUniformLocation("material.ambientClr");
+	unsigned int light_diffuseClr_Loc = shader_light.getUniformLocation("material.diffuseClr");
+	unsigned int light_specularClr_Loc = shader_light.getUniformLocation("material.specularClr");
+	unsigned int light_shininess_Loc = shader_light.getUniformLocation("material.shininess");
+
+	unsigned int light_LambientClr_Loc = shader_light.getUniformLocation("light.ambientClr");
+	unsigned int light_LdiffuseClr_Loc = shader_light.getUniformLocation("light.diffuseClr");
+	unsigned int light_LspecularClr_Loc = shader_light.getUniformLocation("light.specularClr");
+	unsigned int light_Lposition_Loc = shader_light.getUniformLocation("light.position");
 
 
 	glm::mat4 model = glm::mat4(1.0f);
@@ -578,6 +595,23 @@ int main()
 
 
 
+
+		//float pos = sin(glfwGetTime());
+//model = glm::translate(model, glm::vec3(0.0f, pos, 0.0f));
+		glm::vec3 lightColor;
+		lightColor.x = sin(glfwGetTime() * 2.0f);
+		lightColor.y = sin(glfwGetTime() * 0.7f);
+		lightColor.z = sin(glfwGetTime() * 1.3f);
+
+		glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+		glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+
+
+
+
+
+
+
 		shader_lamp.UseShader();
 		model = glm::translate(model, lightPos);
 		model = glm::scale(model, glm::vec3(0.25f));
@@ -585,6 +619,7 @@ int main()
 		glUniformMatrix4fv(lamp_model_Loc, 1, GL_FALSE, &model[0][0]);
 		glUniformMatrix4fv(lamp_view_Loc, 1, GL_FALSE, &view[0][0]);
 		glUniformMatrix4fv(lamp_projection_Loc, 1, GL_FALSE, &projection[0][0]);
+		glUniform3fv(lamp_lampClr_Loc, 1, &lightColor[0]);
 
 		glBindVertexArray(newBox_VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -595,8 +630,9 @@ int main()
 
 
 
-		float pos = sin(glfwGetTime());
-		model = glm::translate(model, glm::vec3(0.0f, pos, 0.0f));
+
+
+
 
 
 
@@ -606,11 +642,23 @@ int main()
 		glUniformMatrix4fv(light_projection_Loc, 1, GL_FALSE, &projection[0][0]);
 
 		glUniform3f(light_lightColor_Loc, 1.0f, 1.0f, 1.0f);
-		glUniform3f(light_objectColor_Loc, 1.0f, 0.0f, 0.0f);
-		glUniform3fv(light_lightPos_Loc, 1, &lightPos[0]);
+
+
 		glUniform3fv(light_viewPos_Loc, 1, &camera.getPositionVec()[0]);
 
+		glUniform3f(light_ambientClr_Loc, 1.0f, 0.5f, 0.31f);
+		glUniform3f(light_diffuseClr_Loc, 1.0f, 0.5f, 0.31f);
+		glUniform3f(light_specularClr_Loc, 0.5f, 0.5f, 0.5f);
+		glUniform1f(light_shininess_Loc, 32.0f);
 
+
+
+
+
+		glUniform3fv(light_LambientClr_Loc, 1, &ambientColor[0]);
+		glUniform3fv(light_LdiffuseClr_Loc, 1, &diffuseColor[0]);
+		glUniform3f(light_LspecularClr_Loc, 1.0f, 1.0f, 1.0f);
+		glUniform3fv(light_Lposition_Loc, 1, &lightPos[0]);
 
 
 		glBindVertexArray(newBox_VAO);
