@@ -1,17 +1,2 @@
 ﻿  main.cpp
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(602,21): warning C4244:  '=': conversion from 'double' to 'T', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(602,21): warning C4244:         with
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(602,21): warning C4244:         [
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(602,21): warning C4244:             T=float
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(602,21): warning C4244:         ]
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(603,21): warning C4244:  '=': conversion from 'double' to 'T', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(603,21): warning C4244:         with
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(603,21): warning C4244:         [
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(603,21): warning C4244:             T=float
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(603,21): warning C4244:         ]
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(604,21): warning C4244:  '=': conversion from 'double' to 'T', possible loss of data
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(604,21): warning C4244:         with
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(604,21): warning C4244:         [
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(604,21): warning C4244:             T=float
-D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\project\src\main.cpp(604,21): warning C4244:         ]
   project.vcxproj -> D:\Dropbox\job\I_2020\0319_P_openGLArcball\solution\bin\x64\Debug\project.exe
