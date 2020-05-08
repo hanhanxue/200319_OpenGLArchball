@@ -450,7 +450,18 @@ int main()
 
 
 
-
+	glm::vec3 cubePositions[] = {
+	glm::vec3(0.0f,  0.0f,  0.0f),
+	glm::vec3(2.0f,  5.0f, -15.0f),
+	glm::vec3(-1.5f, -2.2f, -2.5f),
+	glm::vec3(-3.8f, -2.0f, -12.3f),
+	glm::vec3(2.4f, -0.4f, -3.5f),
+	glm::vec3(-1.7f,  3.0f, -7.5f),
+	glm::vec3(1.3f, -2.0f, -2.5f),
+	glm::vec3(1.5f,  2.0f, -2.5f),
+	glm::vec3(1.5f,  0.2f, -1.5f),
+	glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
 
 
 	glm::vec3 axisColors[] = {
@@ -495,13 +506,40 @@ int main()
 	}
 	stbi_image_free(data);
 
+
+
+
+
+	data = stbi_load("textures/container2_specular.png", &width, &height, &nrChannels, 0);
+
+	unsigned int myTextureSpec;
+	glGenTextures(1, &myTextureSpec);
+	glBindTexture(GL_TEXTURE_2D, myTextureSpec);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
+
+
+
+
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, myTexture);
 
-
-
-
-
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, myTextureSpec);
 
 
 
@@ -545,6 +583,7 @@ int main()
 	unsigned int light_specularClr_Loc = shader_light.getUniformLocation("material.specularClr");
 	unsigned int light_shininess_Loc = shader_light.getUniformLocation("material.shininess");
 	unsigned int light_diffuseTexture_Loc = shader_light.getUniformLocation("material.diffuseTexture");
+	unsigned int light_specTexture_Loc = shader_light.getUniformLocation("material.specTexture");
 
 
 
@@ -552,7 +591,7 @@ int main()
 	unsigned int light_LdiffuseClr_Loc = shader_light.getUniformLocation("light.diffuseClr");
 	unsigned int light_LspecularClr_Loc = shader_light.getUniformLocation("light.specularClr");
 	unsigned int light_Lposition_Loc = shader_light.getUniformLocation("light.position");
-
+	unsigned int light_Ldirection_Loc = shader_light.getUniformLocation("light.direction");
 
 
 
@@ -689,18 +728,31 @@ int main()
 		glUniform3f(light_specularClr_Loc, 0.5f, 0.5f, 0.5f);
 		glUniform1f(light_shininess_Loc, 32.0f);
 		glUniform1i(light_diffuseTexture_Loc, 3);
-
-
+		glUniform1i(light_specTexture_Loc, 5);
+	
 
 
 		glUniform3fv(light_LambientClr_Loc, 1, &ambientColor[0]);
 		glUniform3fv(light_LdiffuseClr_Loc, 1, &diffuseColor[0]);
-		glUniform3f(light_LspecularClr_Loc, 1.0f, 1.0f, 1.0f);
+		glUniform3fv(light_LspecularClr_Loc, 1, &lightColor[0]);
 		glUniform3fv(light_Lposition_Loc, 1, &lightPos[0]);
-
+		glUniform3f(light_Ldirection_Loc, -0.2f, -1.0f, -0.3f);
 
 		glBindVertexArray(newBox_VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		for (unsigned int i = 0; i < 10; i++)
+		{
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, cubePositions[i]);
+
+			float angle = 20.0f * i;
+			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			glUniformMatrix4fv(light_model_Loc, 1, GL_FALSE, &model[0][0]);
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		}
+
+
 
 
 
