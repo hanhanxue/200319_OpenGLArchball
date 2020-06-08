@@ -593,6 +593,14 @@ int main()
 	unsigned int light_Lposition_Loc = shader_light.getUniformLocation("light.position");
 	unsigned int light_Ldirection_Loc = shader_light.getUniformLocation("light.direction");
 
+	unsigned int light_Lconstant_Loc = shader_light.getUniformLocation("light.k_constant");
+	unsigned int light_Llinear_Loc = shader_light.getUniformLocation("light.k_linear");
+	unsigned int light_Lquadratic_Loc = shader_light.getUniformLocation("light.k_quadratic");
+
+	unsigned int light_LcutOff_Loc = shader_light.getUniformLocation("light.cutOff");
+	unsigned int light_LcutOffOuter_Loc = shader_light.getUniformLocation("light.cutOffOuter");
+
+	
 
 
 
@@ -674,7 +682,8 @@ int main()
 			glDrawArrays(GL_LINES, 0, 2);
 		}
 		// Box Background
-		glUniform4f(myColor_Loc, 0.1f, 0.1f, 0.1f, 1.0f);
+		//glUniform4f(myColor_Loc, 0.1f, 0.1f, 0.1f, 1.0f);
+		glUniform4f(myColor_Loc, 0.0f, 0.0f, 0.0f, 1.0f);
 		glBindVertexArray(BoxVAO);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -735,8 +744,21 @@ int main()
 		glUniform3fv(light_LambientClr_Loc, 1, &ambientColor[0]);
 		glUniform3fv(light_LdiffuseClr_Loc, 1, &diffuseColor[0]);
 		glUniform3fv(light_LspecularClr_Loc, 1, &lightColor[0]);
-		glUniform3fv(light_Lposition_Loc, 1, &lightPos[0]);
-		glUniform3f(light_Ldirection_Loc, -0.2f, -1.0f, -0.3f);
+		//glUniform3fv(light_Lposition_Loc, 1, &lightPos[0]);
+		glUniform3fv(light_Lposition_Loc, 1, &camera.getPositionVec()[0]);
+
+
+		//glUniform3f(light_Ldirection_Loc, -0.2f, -1.0f, -0.3f);
+		glUniform3fv(light_Ldirection_Loc, 1, &camera.getFrontVec()[0]);
+
+		glUniform1f(light_Lconstant_Loc, 1.0f);
+		glUniform1f(light_Llinear_Loc, 0.09f);
+		glUniform1f(light_Lquadratic_Loc, 0.032f);
+
+		glUniform1f(light_LcutOff_Loc, glm::cos(  glm::radians(12.5f) ));
+		glUniform1f(light_LcutOffOuter_Loc, glm::cos(glm::radians(15.5f)));
+
+
 
 		glBindVertexArray(newBox_VAO);
 		for (unsigned int i = 0; i < 10; i++)

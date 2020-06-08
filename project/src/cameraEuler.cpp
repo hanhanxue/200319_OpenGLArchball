@@ -128,6 +128,11 @@ glm::vec3 cameraEuler::getPositionVec() const
 	return position;
 }
 
+glm::vec3 cameraEuler::getFrontVec() const
+{
+	return front;
+}
+
 
 
 
