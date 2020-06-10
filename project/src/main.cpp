@@ -472,7 +472,12 @@ int main()
 
 
 
-
+	glm::vec3 pointLightPositions[] = {
+	glm::vec3(0.7f,  0.2f,  2.0f),
+	glm::vec3(2.3f, -3.3f, -4.0f),
+	glm::vec3(-4.0f,  2.0f, -12.0f),
+	glm::vec3(0.0f,  0.0f, -3.0f)
+	};
 
 
 
@@ -586,8 +591,8 @@ int main()
 	unsigned int light_specTexture_Loc = shader_light.getUniformLocation("material.specTexture");
 
 
-
-	unsigned int light_LambientClr_Loc = shader_light.getUniformLocation("light.ambientClr");
+	/*
+		unsigned int light_LambientClr_Loc = shader_light.getUniformLocation("light.ambientClr");
 	unsigned int light_LdiffuseClr_Loc = shader_light.getUniformLocation("light.diffuseClr");
 	unsigned int light_LspecularClr_Loc = shader_light.getUniformLocation("light.specularClr");
 	unsigned int light_Lposition_Loc = shader_light.getUniformLocation("light.position");
@@ -600,10 +605,52 @@ int main()
 	unsigned int light_LcutOff_Loc = shader_light.getUniformLocation("light.cutOff");
 	unsigned int light_LcutOffOuter_Loc = shader_light.getUniformLocation("light.cutOffOuter");
 
-	
+	*/
+
+	// dirLight
+	unsigned int dirLight_direction_Loc = shader_light.getUniformLocation("dirLight.direction");
+	unsigned int dirLight_ambient_Loc = shader_light.getUniformLocation("dirLight.ambient");
+	unsigned int dirLight_diffuse_Loc = shader_light.getUniformLocation("dirLight.diffuse");
+	unsigned int dirLight_specular_Loc = shader_light.getUniformLocation("dirLight.specular");
 
 
+	// pointLight 0
+	unsigned int pointLight0_posiion_Loc = shader_light.getUniformLocation("pointLights[0].position");
 
+	unsigned int pointLight0_ambient_Loc = shader_light.getUniformLocation("pointLights[0].ambient");
+	unsigned int pointLight0_diffuse_Loc = shader_light.getUniformLocation("pointLights[0].diffuse");
+	unsigned int pointLight0_specular_Loc = shader_light.getUniformLocation("pointLights[0].specular");
+
+	unsigned int pointLight0_kconstant_Loc = shader_light.getUniformLocation("pointLights[0].k_constant");
+	unsigned int pointLight0_klinear_Loc = shader_light.getUniformLocation("pointLights[0].k_linear");
+	unsigned int pointLight0_kquadratic_Loc = shader_light.getUniformLocation("pointLights[0].k_quadratic");
+
+
+	// pointLight 1
+	unsigned int pointLight1_posiion_Loc = shader_light.getUniformLocation("pointLights[1].position");
+
+	unsigned int pointLight1_ambient_Loc = shader_light.getUniformLocation("pointLights[1].ambient");
+	unsigned int pointLight1_diffuse_Loc = shader_light.getUniformLocation("pointLights[1].diffuse");
+	unsigned int pointLight1_specular_Loc = shader_light.getUniformLocation("pointLights[1].specular");
+
+	unsigned int pointLight1_kconstant_Loc = shader_light.getUniformLocation("pointLights[1].k_constant");
+	unsigned int pointLight1_klinear_Loc = shader_light.getUniformLocation("pointLights[1].k_linear");
+	unsigned int pointLight1_kquadratic_Loc = shader_light.getUniformLocation("pointLights[1].k_quadratic");
+
+	// SpotLight
+
+	unsigned int spotLight_position_Loc = shader_light.getUniformLocation("spotLight.position");
+	unsigned int spotLight_cutoff_Loc = shader_light.getUniformLocation("spotLight.cutoff");
+	unsigned int spotLight_direction_Loc = shader_light.getUniformLocation("spotLight.direction");
+	unsigned int spotLight_cutoffOuter_Loc = shader_light.getUniformLocation("spotLight.cutoffOuter");
+
+	unsigned int spotLight_ambient_Loc = shader_light.getUniformLocation("spotLight.ambient");
+	unsigned int spotLight_diffuse_Loc = shader_light.getUniformLocation("spotLight.diffuse");
+	unsigned int spotLight_specular_Loc = shader_light.getUniformLocation("spotLight.specular");
+
+	unsigned int spotLight_kconstant_Loc = shader_light.getUniformLocation("spotLight.k_constant");
+	unsigned int spotLight_klinear_Loc = shader_light.getUniformLocation("spotLight.k_linear");
+	unsigned int spotLight_kquadratic_Loc = shader_light.getUniformLocation("spotLight.k_quadratic");
 
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 view = glm::mat4(1.0f);
@@ -682,8 +729,8 @@ int main()
 			glDrawArrays(GL_LINES, 0, 2);
 		}
 		// Box Background
-		//glUniform4f(myColor_Loc, 0.1f, 0.1f, 0.1f, 1.0f);
-		glUniform4f(myColor_Loc, 0.0f, 0.0f, 0.0f, 1.0f);
+		glUniform4f(myColor_Loc, 0.1f, 0.1f, 0.1f, 1.0f);
+		//glUniform4f(myColor_Loc, 0.0f, 0.0f, 0.0f, 1.0f);
 		glBindVertexArray(BoxVAO);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -701,20 +748,26 @@ int main()
 
 
 
-
+		// Light Bulbs
 		shader_lamp.UseShader();
-		model = glm::translate(model, lightPos);
-		model = glm::scale(model, glm::vec3(0.12f));
 
-		glUniformMatrix4fv(lamp_model_Loc, 1, GL_FALSE, &model[0][0]);
-		glUniformMatrix4fv(lamp_view_Loc, 1, GL_FALSE, &view[0][0]);
-		glUniformMatrix4fv(lamp_projection_Loc, 1, GL_FALSE, &projection[0][0]);
-		glUniform3fv(lamp_lampClr_Loc, 1, &lightColor[0]);
+		for (unsigned int i = 0; i < 4; i++)
+		{
+			model = glm::translate(model, pointLightPositions[i]);
+			model = glm::scale(model, glm::vec3(0.08f));
 
-		glBindVertexArray(newBox_VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+			glUniformMatrix4fv(lamp_model_Loc, 1, GL_FALSE, &model[0][0]);
+			glUniformMatrix4fv(lamp_view_Loc, 1, GL_FALSE, &view[0][0]);
+			glUniformMatrix4fv(lamp_projection_Loc, 1, GL_FALSE, &projection[0][0]);
+			glUniform3fv(lamp_lampClr_Loc, 1, &lightColor[0]);
 
-		model = glm::mat4(1.0f);
+			glBindVertexArray(newBox_VAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			model = glm::mat4(1.0f);
+
+		}
+
 
 
 
@@ -740,8 +793,8 @@ int main()
 		glUniform1i(light_specTexture_Loc, 5);
 	
 
-
-		glUniform3fv(light_LambientClr_Loc, 1, &ambientColor[0]);
+		/*
+				glUniform3fv(light_LambientClr_Loc, 1, &ambientColor[0]);
 		glUniform3fv(light_LdiffuseClr_Loc, 1, &diffuseColor[0]);
 		glUniform3fv(light_LspecularClr_Loc, 1, &lightColor[0]);
 		//glUniform3fv(light_Lposition_Loc, 1, &lightPos[0]);
@@ -758,6 +811,52 @@ int main()
 		glUniform1f(light_LcutOff_Loc, glm::cos(  glm::radians(12.5f) ));
 		glUniform1f(light_LcutOffOuter_Loc, glm::cos(glm::radians(15.5f)));
 
+		*/
+
+		glUniform3f(dirLight_direction_Loc, -0.2f, -1.0f, -0.3f);
+		glUniform3f(dirLight_ambient_Loc, 0.05f, 0.05f, 0.05f);
+		glUniform3f(dirLight_diffuse_Loc, 0.4f, 0.4f, 0.4f);
+		glUniform3f(dirLight_specular_Loc, 0.5f, 0.5f, 0.5f);
+
+
+		// POINT LIGHT
+		glUniform3fv(pointLight0_posiion_Loc, 1, &pointLightPositions[0][0]);
+
+		glUniform3f(pointLight0_ambient_Loc, 0.05f, 0.05f, 0.05f);
+		glUniform3f(pointLight0_diffuse_Loc, 0.8f, 0.8f, 0.8f);
+		glUniform3f(pointLight0_specular_Loc, 1.0f, 1.0f, 1.0f);
+
+		glUniform1f(pointLight0_kconstant_Loc, 1.0f);
+		glUniform1f(pointLight0_klinear_Loc, 0.09f);
+		glUniform1f(pointLight0_kquadratic_Loc, 0.032f);
+
+
+		glUniform3fv(pointLight1_posiion_Loc, 1, &pointLightPositions[1][0]);
+
+		glUniform3f(pointLight1_ambient_Loc, 0.05f, 0.05f, 0.05f);
+		glUniform3f(pointLight1_diffuse_Loc, 0.8f, 0.8f, 0.8f);
+		glUniform3f(pointLight1_specular_Loc, 1.0f, 1.0f, 1.0f);
+
+		glUniform1f(pointLight1_kconstant_Loc, 1.0f);
+		glUniform1f(pointLight1_klinear_Loc, 0.09f);
+		glUniform1f(pointLight1_kquadratic_Loc, 0.02f);
+
+
+		// SPOT LIGHT
+		glUniform3fv(spotLight_position_Loc, 1, &camera.getPositionVec()[0]);
+		glUniform3fv(spotLight_direction_Loc, 1, &camera.getFrontVec()[0]);
+
+
+		glUniform1f(spotLight_cutoff_Loc, glm::cos(glm::radians(12.5f)));
+		glUniform1f(spotLight_cutoffOuter_Loc, glm::cos(glm::radians(17.5f)));
+
+		glUniform3f(spotLight_ambient_Loc, 0.05f, 0.05f, 0.05f);
+		glUniform3f(spotLight_diffuse_Loc, 0.8f, 0.8f, 0.8f);
+		glUniform3f(spotLight_specular_Loc, 1.0f, 1.0f, 1.0f);
+
+		glUniform1f(spotLight_kconstant_Loc, 1.0f);
+		glUniform1f(spotLight_klinear_Loc, 0.09f);
+		glUniform1f(spotLight_kquadratic_Loc, 0.032f);
 
 
 		glBindVertexArray(newBox_VAO);
