@@ -1,18 +1,22 @@
 #define STB_IMAGE_IMPLEMENTATION
-
-#include <iostream>
+//#include <glm/gtc/type_ptr.hpp>
+//#include "stb_image.h"
 
 #include <glad\glad.h>
-
 #include <GLFW\glfw3.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtc/type_ptr.hpp>
+#include <assimp\Importer.hpp>
 
-#include "stb_image.h"
+
 #include "shader.h"
 #include "cameraEuler.h"
+#include "Model.h"
+
+
+#include <iostream>
+
 
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
@@ -85,7 +89,7 @@ int main()
 		return -1;
 	}
 
-
+	stbi_set_flip_vertically_on_load(true);
 
 
 	glViewport(25, 25, SCR_WIDTH - 50, SCR_HEIGHT - 50);
@@ -660,6 +664,21 @@ int main()
 	//glPolygonMode(GL_POINT);
 
 
+
+
+
+
+
+
+	//shader_default.CompileShader("shaders/shader.vert", "shaders/shader.frag");
+
+	Shader ourShader;
+	ourShader.CompileShader("shaders/model_loading.avert", "shaders/model_loading.afrag");
+	//Shader ourShader.CompileShader("model_loading.vs", "model_loading.fs");
+	Model ourModel((char*)"models/backpack/backpack.obj");
+
+
+
 	while (!glfwWindowShouldClose(window)) // This is the render loop
 	{
 
@@ -772,9 +791,6 @@ int main()
 
 
 
-
-
-
 		shader_light.UseShader();
 		glUniformMatrix4fv(light_model_Loc, 1, GL_FALSE, &model[0][0]);
 		glUniformMatrix4fv(light_view_Loc, 1, GL_FALSE, &view[0][0]);
@@ -789,6 +805,7 @@ int main()
 		//glUniform3f(light_diffuseClr_Loc, 1.0f, 0.5f, 0.31f);
 		glUniform3f(light_specularClr_Loc, 0.5f, 0.5f, 0.5f);
 		glUniform1f(light_shininess_Loc, 32.0f);
+
 		glUniform1i(light_diffuseTexture_Loc, 3);
 		glUniform1i(light_specTexture_Loc, 5);
 	
@@ -859,6 +876,8 @@ int main()
 		glUniform1f(spotLight_kquadratic_Loc, 0.032f);
 
 
+
+		/*
 		glBindVertexArray(newBox_VAO);
 		for (unsigned int i = 0; i < 10; i++)
 		{
@@ -873,6 +892,9 @@ int main()
 
 		}
 
+		
+		
+		*/
 
 
 
@@ -880,11 +902,22 @@ int main()
 
 
 
+		ourShader.UseShader();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+		glUniformMatrix4fv(light_model_Loc, 1, GL_FALSE, &model[0][0]);
+
+
+		glUniformMatrix4fv(light_view_Loc, 1, GL_FALSE, &view[0][0]);
+		glUniformMatrix4fv(light_projection_Loc, 1, GL_FALSE, &projection[0][0]);
+		ourModel.Draw(ourShader);
 
 
 
 
 
+		glm::mat4(1.0f);
 
 
 

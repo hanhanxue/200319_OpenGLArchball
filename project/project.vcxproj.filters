@@ -30,6 +30,12 @@
     <ClCompile Include="src\cameraEuler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.h">
@@ -44,6 +50,12 @@
     <ClInclude Include="src\cameraEuler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />
@@ -52,6 +64,8 @@
     <None Include="shaders\colors.vert" />
     <None Include="shaders\lamp.frag" />
     <None Include="shaders\lamp.vert" />
+    <None Include="shaders\model_loading.frag" />
+    <None Include="shaders\model_loading.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\container.jpg">
