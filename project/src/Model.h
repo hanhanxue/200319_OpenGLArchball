@@ -10,7 +10,7 @@
 #include <assimp/postprocess.h>
 
 #include "shader.h"
-#include "Mesh.h"
+#include "mesh.h"
 
 
 class Model

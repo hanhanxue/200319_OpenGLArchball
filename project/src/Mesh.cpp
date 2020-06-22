@@ -1,4 +1,4 @@
-#include "Mesh.h"
+#include "mesh.h"
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
 {
@@ -65,6 +65,8 @@ void Mesh::Draw(Shader& shader)
 	glActiveTexture(GL_TEXTURE0);   // Do we really need this?
 
 	glBindVertexArray(VAO);
+
+	//glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 

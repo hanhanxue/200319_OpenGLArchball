@@ -12,7 +12,7 @@
 
 #include "shader.h"
 #include "cameraEuler.h"
-#include "Model.h"
+#include "model.h"
 
 
 #include <iostream>
@@ -51,7 +51,7 @@ cameraEuler camera = cameraEuler(SCR_WIDTH - 50.0f, SCR_HEIGHT - 50.0f);
 Shader shader_default;
 Shader shader_light;
 Shader shader_lamp;
-
+Shader ourShader;
 
 
 int main()
@@ -555,6 +555,13 @@ int main()
 
 
 
+	ourShader.CompileShader("shaders/model_loading.vert", "shaders/model_loading.frag");
+	unsigned int our_model_Loc = ourShader.getUniformLocation("model");
+	unsigned int our_view_Loc = ourShader.getUniformLocation("view");
+	unsigned int our_projection_Loc = ourShader.getUniformLocation("projection");
+
+
+
 
 
 	shader_default.CompileShader("shaders/shader.vert", "shaders/shader.frag");
@@ -672,10 +679,14 @@ int main()
 
 	//shader_default.CompileShader("shaders/shader.vert", "shaders/shader.frag");
 
-	Shader ourShader;
-	ourShader.CompileShader("shaders/model_loading.avert", "shaders/model_loading.afrag");
+
 	//Shader ourShader.CompileShader("model_loading.vs", "model_loading.fs");
 	Model ourModel((char*)"models/backpack/backpack.obj");
+
+	//Shader ourShader.CompileShader("model_loading.vs", "model_loading.fs");
+	Model grid((char*)"models/grid/grid20.obj");
+
+
 
 
 
@@ -756,6 +767,12 @@ int main()
 
 
 
+
+
+		
+		
+
+
 		//float pos = sin(glfwGetTime());
 		//model = glm::translate(model, glm::vec3(0.0f, pos, 0.0f));
 		glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -764,8 +781,7 @@ int main()
 
 
 
-
-
+		/*
 
 		// Light Bulbs
 		shader_lamp.UseShader();
@@ -787,10 +803,12 @@ int main()
 
 		}
 
+		*/
 
 
-
-
+		/*
+		
+		
 		shader_light.UseShader();
 		glUniformMatrix4fv(light_model_Loc, 1, GL_FALSE, &model[0][0]);
 		glUniformMatrix4fv(light_view_Loc, 1, GL_FALSE, &view[0][0]);
@@ -808,7 +826,7 @@ int main()
 
 		glUniform1i(light_diffuseTexture_Loc, 3);
 		glUniform1i(light_specTexture_Loc, 5);
-	
+	*/
 
 		/*
 				glUniform3fv(light_LambientClr_Loc, 1, &ambientColor[0]);
@@ -830,6 +848,7 @@ int main()
 
 		*/
 
+		/*
 		glUniform3f(dirLight_direction_Loc, -0.2f, -1.0f, -0.3f);
 		glUniform3f(dirLight_ambient_Loc, 0.05f, 0.05f, 0.05f);
 		glUniform3f(dirLight_diffuse_Loc, 0.4f, 0.4f, 0.4f);
@@ -875,7 +894,7 @@ int main()
 		glUniform1f(spotLight_klinear_Loc, 0.09f);
 		glUniform1f(spotLight_kquadratic_Loc, 0.032f);
 
-
+			*/
 
 		/*
 		glBindVertexArray(newBox_VAO);
@@ -903,23 +922,21 @@ int main()
 
 
 		ourShader.UseShader();
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-		glUniformMatrix4fv(light_model_Loc, 1, GL_FALSE, &model[0][0]);
+
+glUniformMatrix4fv(our_model_Loc, 1, GL_FALSE, &model[0][0]);
+glUniformMatrix4fv(our_view_Loc, 1, GL_FALSE, &view[0][0]);
+glUniformMatrix4fv(our_projection_Loc, 1, GL_FALSE, &projection[0][0]);
 
 
-		glUniformMatrix4fv(light_view_Loc, 1, GL_FALSE, &view[0][0]);
-		glUniformMatrix4fv(light_projection_Loc, 1, GL_FALSE, &projection[0][0]);
+
+
 		ourModel.Draw(ourShader);
-
-
-
-
 
 		glm::mat4(1.0f);
 
-
+		/*
+				grid.Draw(ourShader);
+		*/
 
 		
 
